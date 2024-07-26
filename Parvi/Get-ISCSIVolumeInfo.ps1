@@ -1,32 +1,7 @@
 # Get all volumes and filter those with BusType as iSCSI
-$volumes = Get-Volume | Select-Object DriveLetter, FileSystemLabel, SizeRemaining, Size
+#$volumes = Get-Volume | Select-Object DriveLetter, FileSystemLabel, SizeRemaining, Size
+$volumes = Get-Volume | Where-Object { $_.FileSystemLabel -eq "VL-DATA31_SSD" } | Select-Object @{Name="SizeRemainingGB";Expression={[math]::round($_.SizeRemaining / 1GB, 2)}}
 
-# Output the information in a formatted way
 foreach ($volume in $volumes) {
-    $driveLetter = $volume.DriveLetter
-    $label = $volume.FileSystemLabel
-    
-    # Determine size in appropriate unit (GB or TB)
-    if ($volume.Size -ge 1TB) {
-        $sizeTB = [math]::round($volume.Size / 1TB, 2)
-        $sizeFormatted = "$sizeTB TB"
-    } else {
-        $sizeGB = [math]::round($volume.Size / 1GB, 2)
-        $sizeFormatted = "$sizeGB GB"
-    }
-
-    # Determine free space in appropriate unit (GB or TB)
-    if ($volume.SizeRemaining -ge 1TB) {
-        $freeSpaceTB = [math]::round($volume.SizeRemaining / 1TB, 2)
-        $freeSpaceFormatted = "$freeSpaceTB TB"
-    } else {
-        $freeSpaceGB = [math]::round($volume.SizeRemaining / 1GB, 2)
-        $freeSpaceFormatted = "$freeSpaceGB GB"
-    }
-    
-    # Output the formatted information
-    Write-Output "Label: $label"
-    Write-Output "Total Size: $sizeFormatted"
-    Write-Output "Free Space: $freeSpaceFormatted"
-    Write-Output ""
+    Write-Output "$($volume.SizeRemainingGB)"
 }

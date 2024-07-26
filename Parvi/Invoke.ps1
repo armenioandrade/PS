@@ -1,3 +1,3 @@
 #Importing functions
 . "$PSScriptRoot\Functions.ps1"
-Menu
+Invoke-Command -ComputerName NODE01 -File .\Get-ISCSIVolumeInfo.ps1
